@@ -1,6 +1,6 @@
 import express from 'express'
 import dotenv from 'dotenv'
-import productRoutes from './routes/productRoutes'
+import adminRoutes from './routes/adminRoutes'
 import connection from './database/connection'
 
 dotenv.config()
@@ -12,6 +12,9 @@ connection()
     console.log(error)
   })
 const app = express()
-app.use('/api/products', productRoutes)
+app.use(express.json())
+app.use('/api/admin', adminRoutes)
 const PORT = process.env.PORT || 4000
-app.listen(PORT, () => console.log('Listening on port:', PORT))
+app.listen(PORT, () => {
+  console.log('Listening on port:', PORT)
+})
