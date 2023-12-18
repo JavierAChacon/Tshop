@@ -42,7 +42,12 @@ const userSchema = new mongoose_1.Schema({
     },
     role: {
         type: String,
-        enum: ['superadmin', 'admin']
+        enum: ['superadmin', 'admin'],
+        default: 'admin'
+    },
+    password: {
+        type: String,
+        required: true
     }
 });
 const User = mongoose_1.default.model('User', userSchema, 'users');

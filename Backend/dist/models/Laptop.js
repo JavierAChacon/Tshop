@@ -24,7 +24,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.requiredFields = exports.Laptop = void 0;
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 const mongoose_1 = __importStar(require("mongoose"));
 const laptopSchema = new mongoose_1.Schema({
     stock: {
@@ -49,11 +48,6 @@ const laptopSchema = new mongoose_1.Schema({
         required: true,
         trim: true
     },
-    name: {
-        type: String,
-        required: true,
-        trim: true
-    },
     ram: {
         type: Number,
         required: true
@@ -61,7 +55,6 @@ const laptopSchema = new mongoose_1.Schema({
     processor: {
         brand: {
             type: String,
-            enum: ['AMD', 'Intel'],
             required: true
         },
         model: {
@@ -96,9 +89,12 @@ const laptopSchema = new mongoose_1.Schema({
                 enum: ['HDD', 'SSD'],
                 required: true
             }
-        ],
-        images: [{ type: String, required: true }]
-    }
+        ]
+    },
+    images: [{
+            type: String,
+            required: true
+        }]
 }, { timestamps: true });
 const requiredFields = Object.keys(laptopSchema.obj);
 exports.requiredFields = requiredFields;

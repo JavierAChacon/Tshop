@@ -23,11 +23,6 @@ const laptopSchema = new Schema(
       required: true,
       trim: true
     },
-    name: {
-      type: String,
-      required: true,
-      trim: true
-    },
     ram: {
       type: Number,
       required: true
@@ -35,7 +30,6 @@ const laptopSchema = new Schema(
     processor: {
       brand: {
         type: String,
-        enum: ['AMD', 'Intel'],
         required: true
       },
       model: {
@@ -70,9 +64,12 @@ const laptopSchema = new Schema(
           enum: ['HDD', 'SSD'],
           required: true
         }
-      ],
-      images: [{ type: String, required: true }]
-    }
+      ]
+    },
+    images: [{
+      type: String,
+      required: true
+    }]
   },
   { timestamps: true }
 )

@@ -12,16 +12,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addLaptop = void 0;
 const Laptop_1 = require("../models/Laptop");
 const addLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
+        const newLaptop = Object.assign(Object.assign({}, req.body), { images: (_a = req === null || req === void 0 ? void 0 : req.files) === null || _a === void 0 ? void 0 : _a.map(file => file.filename) });
         // validate missing fields
         const missingFields = [];
         Laptop_1.requiredFields.forEach(field => {
-            if (!req.body[field] && typeof req.body[field] !== 'object') {
+            if (!newLaptop[field] && typeof newLaptop[field] !== 'object') {
                 missingFields.push(field);
             }
-            else if (typeof req.body[field] === 'object') {
-                Object.keys(req.body[field]).forEach(key => {
-                    if (!req.body[field][key]) {
+            else if (typeof newLaptop[field] === 'object') {
+                Object.keys(newLaptop[field]).forEach(key => {
+                    if (!newLaptop[field][key]) {
                         missingFields.push(`${key} of ${field}`);
                     }
                 });
@@ -42,7 +44,7 @@ const addLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 error: `The fields ${missingFields.join(', ')} are required`
             });
         }
-        yield new Laptop_1.Laptop(req.body).save();
+        yield new Laptop_1.Laptop(newLaptop).save();
         res.json({
             msg: 'Latop added successfully'
         });

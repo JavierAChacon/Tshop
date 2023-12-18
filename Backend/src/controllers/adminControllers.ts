@@ -3,14 +3,18 @@ import { requiredFields, Laptop } from '../models/Laptop'
 
 const addLaptop = async (req: Request, res: Response) => {
   try {
+    const newLaptop = {
+      ...req.body,
+      images: (req?.files as Express.Multer.File[])?.map(file => file.filename)
+    }
     // validate missing fields
     const missingFields: string[] = []
     requiredFields.forEach(field => {
-      if (!req.body[field] && typeof req.body[field] !== 'object') {
+      if (!newLaptop[field] && typeof newLaptop[field] !== 'object') {
         missingFields.push(field)
-      } else if (typeof req.body[field] === 'object') {
-        Object.keys(req.body[field]).forEach(key => {
-          if (!req.body[field][key]) {
+      } else if (typeof newLaptop[field] === 'object') {
+        Object.keys(newLaptop[field]).forEach(key => {
+          if (!newLaptop[field][key]) {
             missingFields.push(`${key} of ${field}`)
           }
         })
@@ -29,7 +33,7 @@ const addLaptop = async (req: Request, res: Response) => {
         error: `The fields ${missingFields.join(', ')} are required`
       })
     }
-    await new Laptop(req.body).save()
+    await new Laptop(newLaptop).save()
     res.json({
       msg: 'Latop added successfully'
     })
