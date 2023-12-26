@@ -16,6 +16,7 @@ const laptopSchema = new Schema(
     },
     OS: {
       type: String,
+      required: true,
       trim: true
     },
     model: {
@@ -30,7 +31,8 @@ const laptopSchema = new Schema(
     processor: {
       brand: {
         type: String,
-        required: true
+        required: true,
+        trim: true
       },
       model: {
         type: String,
@@ -55,8 +57,9 @@ const laptopSchema = new Schema(
     },
     storage: {
       capacity: {
-        type: Number,
-        required: true
+        type: String,
+        required: true,
+        trim: true
       },
       storageType: [
         {
@@ -65,6 +68,16 @@ const laptopSchema = new Schema(
           required: true
         }
       ]
+    },
+    graphicCard: {
+      brand: {
+        type: String,
+        trim: true
+      },
+      model: {
+        type: String,
+        trim: true
+      }
     },
     images: [{
       type: String,

@@ -41,6 +41,7 @@ const laptopSchema = new mongoose_1.Schema({
     },
     OS: {
         type: String,
+        required: true,
         trim: true
     },
     model: {
@@ -55,7 +56,8 @@ const laptopSchema = new mongoose_1.Schema({
     processor: {
         brand: {
             type: String,
-            required: true
+            required: true,
+            trim: true
         },
         model: {
             type: String,
@@ -80,8 +82,9 @@ const laptopSchema = new mongoose_1.Schema({
     },
     storage: {
         capacity: {
-            type: Number,
-            required: true
+            type: String,
+            required: true,
+            trim: true
         },
         storageType: [
             {
@@ -90,6 +93,16 @@ const laptopSchema = new mongoose_1.Schema({
                 required: true
             }
         ]
+    },
+    graphicCard: {
+        brand: {
+            type: String,
+            trim: true
+        },
+        model: {
+            type: String,
+            trim: true
+        }
     },
     images: [{
             type: String,

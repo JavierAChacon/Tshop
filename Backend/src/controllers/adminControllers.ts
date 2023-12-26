@@ -4,14 +4,22 @@ import { requiredFields, Laptop } from '../models/Laptop'
 const addLaptop = async (req: Request, res: Response) => {
   try {
     const newLaptop = {
-      ...req.body,
-      images: (req?.files as Express.Multer.File[])?.map(file => file.filename)
+      ...req.body
     }
-    // validate missing fields
+    if (req.file) {
+      newLaptop.images = req.file.filename
+    } else if (req.files && Array.isArray(req.files)) {
+      newLaptop.images = req.files.map(file => file.filename)
+    }
     const missingFields: string[] = []
     requiredFields.forEach(field => {
       if (!newLaptop[field] && typeof newLaptop[field] !== 'object') {
         missingFields.push(field)
+      } else if (
+        Array.isArray(newLaptop[field]) &&
+        newLaptop[field].length === 0
+      ) {
+        missingFields.push(`${field} is empty`)
       } else if (typeof newLaptop[field] === 'object') {
         Object.keys(newLaptop[field]).forEach(key => {
           if (!newLaptop[field][key]) {

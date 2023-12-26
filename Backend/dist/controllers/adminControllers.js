@@ -12,14 +12,22 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addLaptop = void 0;
 const Laptop_1 = require("../models/Laptop");
 const addLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
-        const newLaptop = Object.assign(Object.assign({}, req.body), { images: (_a = req === null || req === void 0 ? void 0 : req.files) === null || _a === void 0 ? void 0 : _a.map(file => file.filename) });
-        // validate missing fields
+        const newLaptop = Object.assign({}, req.body);
+        if (req.file) {
+            newLaptop.images = req.file.filename;
+        }
+        else if (req.files && Array.isArray(req.files)) {
+            newLaptop.images = req.files.map(file => file.filename);
+        }
         const missingFields = [];
         Laptop_1.requiredFields.forEach(field => {
             if (!newLaptop[field] && typeof newLaptop[field] !== 'object') {
                 missingFields.push(field);
+            }
+            else if (Array.isArray(newLaptop[field]) &&
+                newLaptop[field].length === 0) {
+                missingFields.push(`${field} is empty`);
             }
             else if (typeof newLaptop[field] === 'object') {
                 Object.keys(newLaptop[field]).forEach(key => {
