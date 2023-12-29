@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express'
+import path from 'path'
 import multer, { MulterError } from 'multer'
-import { addLaptop } from '../controllers/adminControllers'
+import { addLaptop, register } from '../controllers/adminControllers'
 
 const router = express.Router()
 
@@ -43,8 +44,6 @@ const handleMulterError = (
 
 router.route('/laptops').post(upload, handleMulterError, addLaptop)
 
-router.route('/laptops').post(upload, addLaptop)
-
-router.post('/register')
+router.post('/register', register)
 
 export default router

@@ -1,6 +1,6 @@
 import express from 'express'
-import multer from 'multer'
 import dotenv from 'dotenv'
+import path from 'path'
 import adminRoutes from './routes/adminRoutes'
 import connection from './database/connection'
 
@@ -13,6 +13,7 @@ connection()
     console.log(error)
   })
 const app = express()
+app.use('/api/images', express.static('images'))
 app.use(express.json())
 app.use('/api/admin', adminRoutes)
 const PORT = process.env.PORT || 4000

@@ -59,6 +59,5 @@ const handleMulterError = (err, req, res, next) => {
     next(err);
 };
 router.route('/laptops').post(upload, handleMulterError, adminControllers_1.addLaptop);
-router.route('/laptops').post(upload, adminControllers_1.addLaptop);
-router.post('/register');
+router.post('/register', adminControllers_1.register);
 exports.default = router;

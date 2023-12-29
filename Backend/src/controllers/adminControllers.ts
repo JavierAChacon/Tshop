@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express'
+import User from '../models/User'
 import { requiredFields, Laptop } from '../models/Laptop'
 
 const addLaptop = async (req: Request, res: Response) => {
@@ -7,9 +8,9 @@ const addLaptop = async (req: Request, res: Response) => {
       ...req.body
     }
     if (req.file) {
-      newLaptop.images = req.file.filename
+      newLaptop.images = `${process.env.BASE_URL}/images/${req.file.filename}`
     } else if (req.files && Array.isArray(req.files)) {
-      newLaptop.images = req.files.map(file => file.filename)
+      newLaptop.images = req.files.map(file => `${process.env.BASE_URL}/images/${file.filename}`)
     }
     const missingFields: string[] = []
     requiredFields.forEach(field => {
@@ -52,4 +53,24 @@ const addLaptop = async (req: Request, res: Response) => {
   }
 }
 
-export { addLaptop }
+const register = async (req: Request, res: Response) => {
+  try {
+    new User(req.body).save
+    
+  } catch (error: any) {
+    return res.status(500).json({
+      error: error.message
+    })
+  }
+}
+
+const login = async (req: Request, res: Response) => {
+  try {
+  } catch (error: any) {
+    return res.status(500).json({
+      error: error.message
+    })
+  }
+}
+
+export { addLaptop, register }

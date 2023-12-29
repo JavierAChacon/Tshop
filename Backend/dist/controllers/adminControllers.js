@@ -8,17 +8,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addLaptop = void 0;
+exports.register = exports.addLaptop = void 0;
+const User_1 = __importDefault(require("../models/User"));
 const Laptop_1 = require("../models/Laptop");
 const addLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newLaptop = Object.assign({}, req.body);
         if (req.file) {
-            newLaptop.images = req.file.filename;
+            newLaptop.images = `${process.env.BASE_URL}/images/${req.file.filename}`;
         }
         else if (req.files && Array.isArray(req.files)) {
-            newLaptop.images = req.files.map(file => file.filename);
+            newLaptop.images = req.files.map(file => `${process.env.BASE_URL}/images/${file.filename}`);
         }
         const missingFields = [];
         Laptop_1.requiredFields.forEach(field => {
@@ -64,3 +68,23 @@ const addLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.addLaptop = addLaptop;
+const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        new User_1.default(req.body).save;
+    }
+    catch (error) {
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+});
+exports.register = register;
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+    }
+    catch (error) {
+        return res.status(500).json({
+            error: error.message
+        });
+    }
+});

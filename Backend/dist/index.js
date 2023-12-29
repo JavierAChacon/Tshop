@@ -16,6 +16,7 @@ dotenv_1.default.config();
     console.log(error);
 });
 const app = (0, express_1.default)();
+app.use('/api/images', express_1.default.static('images'));
 app.use(express_1.default.json());
 app.use('/api/admin', adminRoutes_1.default);
 const PORT = process.env.PORT || 4000;
