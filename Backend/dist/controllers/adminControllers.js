@@ -12,20 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.register = exports.addLaptop = void 0;
-const User_1 = __importDefault(require("../models/User"));
+exports.login = exports.updateLaptop = exports.deleteLaptop = exports.getLaptop = exports.getLaptops = exports.addLaptop = void 0;
 const Laptop_1 = require("../models/Laptop");
-const addLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const User_1 = require("../models/User");
+const generateJwt_1 = __importDefault(require("../helpers/generateJwt"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const addLaptop = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newLaptop = Object.assign({}, req.body);
         if (req.file) {
-            newLaptop.images = `${process.env.BASE_URL}/images/${req.file.filename}`;
+            newLaptop.images = `${process.env.BASE_URL}:${process.env.PORT}/api/images/${req.file.filename}`;
         }
         else if (req.files && Array.isArray(req.files)) {
-            newLaptop.images = req.files.map(file => `${process.env.BASE_URL}/images/${file.filename}`);
+            newLaptop.images = req.files.map(file => `${process.env.BASE_URL}:${process.env.PORT}/api/images/${file.filename}`);
         }
         const missingFields = [];
-        Laptop_1.requiredFields.forEach(field => {
+        Laptop_1.requiredFieldsLaptop.forEach(field => {
             if (!newLaptop[field] && typeof newLaptop[field] !== 'object') {
                 missingFields.push(field);
             }
@@ -68,23 +70,103 @@ const addLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.addLaptop = addLaptop;
-const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getLaptops = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        new User_1.default(req.body).save;
+        const laptops = yield Laptop_1.Laptop.find().sort({ createdAt: -1 });
+        if (!laptops) {
+            res.status(404).json({
+                error: 'Laptops not found'
+            });
+        }
+        res.json({
+            laptops
+        });
     }
     catch (error) {
-        return res.status(500).json({
+        res.status(500).json({
             error: error.message
         });
     }
 });
-exports.register = register;
+exports.getLaptops = getLaptops;
+const getLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const laptop = yield Laptop_1.Laptop.findById(req.params.id);
+        if (!laptop) {
+            return res.status(404).json({
+                error: 'Laptop not found'
+            });
+        }
+        return res.json({
+            laptop
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
+});
+exports.getLaptop = getLaptop;
+const updateLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const newLaptop = Object.assign({}, req.body);
+        if (req.file) {
+            newLaptop.images = `${process.env.BASE_URL}:${process.env.PORT}/api/images/${req.file.filename}`;
+        }
+        else if (req.files && Array.isArray(req.files)) {
+            newLaptop.images = req.files.map(file => `${process.env.BASE_URL}:${process.env.PORT}/api/images/${file.filename}`);
+        }
+        const laptop = yield Laptop_1.Laptop.findByIdAndUpdate(req.params.id, newLaptop);
+        return res.json({
+            msg: 'Laptop edited successfully',
+            laptop
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
+});
+exports.updateLaptop = updateLaptop;
+const deleteLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const laptop = yield Laptop_1.Laptop.findByIdAndDelete(req.params.id);
+        return res.json({
+            msg: 'Laptop deleted successfully',
+            laptop
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            error: error.message
+        });
+    }
+});
+exports.deleteLaptop = deleteLaptop;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { email, password } = req.body;
+        const user = yield User_1.User.findOne({ email });
+        if (!user) {
+            res.status(404).json({
+                error: 'User not found'
+            });
+        }
+        else if (!(yield bcrypt_1.default.compare(password, user.password))) {
+            res.status(400).json({
+                error: 'Incorrect password'
+            });
+        }
+        else {
+            res.json({ token: (0, generateJwt_1.default)(req.body) });
+        }
     }
     catch (error) {
-        return res.status(500).json({
+        res.json({
             error: error.message
         });
     }
 });
+exports.login = login;

@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.requiredFields = exports.Laptop = void 0;
+exports.requiredFieldsLaptop = exports.Laptop = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const laptopSchema = new mongoose_1.Schema({
     stock: {
@@ -109,7 +109,7 @@ const laptopSchema = new mongoose_1.Schema({
             required: true
         }]
 }, { timestamps: true });
-const requiredFields = Object.keys(laptopSchema.obj);
-exports.requiredFields = requiredFields;
+const requiredFieldsLaptop = Object.keys(laptopSchema.obj);
+exports.requiredFieldsLaptop = requiredFieldsLaptop;
 const Laptop = mongoose_1.default.model('Laptop', laptopSchema, 'laptops');
 exports.Laptop = Laptop;

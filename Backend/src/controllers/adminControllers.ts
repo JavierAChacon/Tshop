@@ -1,19 +1,24 @@
-import type { Request, Response } from 'express'
-import User from '../models/User'
-import { requiredFields, Laptop } from '../models/Laptop'
+import { Request, Response, NextFunction } from 'express'
+import { Laptop, requiredFieldsLaptop } from '../models/Laptop'
+import { User } from '../models/User'
+import generateJWT from '../helpers/generateJwt'
+import bcrypt from 'bcrypt'
 
-const addLaptop = async (req: Request, res: Response) => {
+const addLaptop = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const newLaptop = {
       ...req.body
     }
     if (req.file) {
-      newLaptop.images = `${process.env.BASE_URL}/images/${req.file.filename}`
+      newLaptop.images = `${process.env.BASE_URL}:${process.env.PORT}/api/images/${req.file.filename}`
     } else if (req.files && Array.isArray(req.files)) {
-      newLaptop.images = req.files.map(file => `${process.env.BASE_URL}/images/${file.filename}`)
+      newLaptop.images = req.files.map(
+        file =>
+          `${process.env.BASE_URL}:${process.env.PORT}/api/images/${file.filename}`
+      )
     }
     const missingFields: string[] = []
-    requiredFields.forEach(field => {
+    requiredFieldsLaptop.forEach(field => {
       if (!newLaptop[field] && typeof newLaptop[field] !== 'object') {
         missingFields.push(field)
       } else if (
@@ -53,12 +58,76 @@ const addLaptop = async (req: Request, res: Response) => {
   }
 }
 
-const register = async (req: Request, res: Response) => {
+const getLaptops = async (req: Request, res: Response) => {
   try {
-    new User(req.body).save
-    
+    const laptops = await Laptop.find().sort({ createdAt: -1 })
+    if (!laptops) {
+      res.status(404).json({
+        error: 'Laptops not found'
+      })
+    }
+    res.json({
+      laptops
+    })
   } catch (error: any) {
-    return res.status(500).json({
+    res.status(500).json({
+      error: error.message
+    })
+  }
+}
+
+const getLaptop = async (req: Request, res: Response) => {
+  try {
+    const laptop = await Laptop.findById(req.params.id)
+    if (!laptop) {
+      return res.status(404).json({
+        error: 'Laptop not found'
+      })
+    }
+    return res.json({
+      laptop
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      error: error.message
+    })
+  }
+}
+
+const updateLaptop = async (req: Request, res: Response) => {
+  try {
+    const newLaptop = {
+      ...req.body
+    }
+    if (req.file) {
+      newLaptop.images = `${process.env.BASE_URL}:${process.env.PORT}/api/images/${req.file.filename}`
+    } else if (req.files && Array.isArray(req.files)) {
+      newLaptop.images = req.files.map(
+        file =>
+          `${process.env.BASE_URL}:${process.env.PORT}/api/images/${file.filename}`
+      )
+    }
+    const laptop = await Laptop.findByIdAndUpdate(req.params.id, newLaptop)
+    return res.json({
+      msg: 'Laptop edited successfully',
+      laptop
+    })
+  } catch (error: any) {
+    res.status(500).json({
+      error: error.message
+    })
+  }
+}
+
+const deleteLaptop = async (req: Request, res: Response) => {
+  try {
+    const laptop = await Laptop.findByIdAndDelete(req.params.id)
+    return res.json({
+      msg: 'Laptop deleted successfully',
+      laptop
+    })
+  } catch (error: any) {
+    res.status(500).json({
       error: error.message
     })
   }
@@ -66,11 +135,24 @@ const register = async (req: Request, res: Response) => {
 
 const login = async (req: Request, res: Response) => {
   try {
+    const { email, password } = req.body
+    const user = await User.findOne({ email })
+    if (!user) {
+      res.status(404).json({
+        error: 'User not found'
+      })
+    } else if (!(await bcrypt.compare(password, user.password))) {
+      res.status(400).json({
+        error: 'Incorrect password'
+      })
+    } else {
+      res.json({ token: generateJWT(req.body) })
+    }
   } catch (error: any) {
-    return res.status(500).json({
+    res.json({
       error: error.message
     })
   }
 }
 
-export { addLaptop, register }
+export { addLaptop, getLaptops, getLaptop, deleteLaptop, updateLaptop, login }

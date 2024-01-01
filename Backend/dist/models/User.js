@@ -23,6 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.requiredFieldsUser = exports.User = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 const userSchema = new mongoose_1.Schema({
     email: {
@@ -48,7 +49,14 @@ const userSchema = new mongoose_1.Schema({
     password: {
         type: String,
         required: true
+    },
+    token: {
+        type: String
     }
 });
 const User = mongoose_1.default.model('User', userSchema, 'users');
-exports.default = User;
+exports.User = User;
+const requiredFieldsUser = Object.keys(userSchema.obj).filter(key => {
+    return userSchema.path(key).isRequired;
+});
+exports.requiredFieldsUser = requiredFieldsUser;

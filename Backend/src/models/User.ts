@@ -24,9 +24,15 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  token: {
+    type: String
   }
 })
-
+type User = InferSchemaType<typeof userSchema>
 const User = mongoose.model('User', userSchema, 'users')
+const requiredFieldsUser: string[] = Object.keys(userSchema.obj).filter(key => {
+  return userSchema.path(key).isRequired
+})
 
-export default User
+export { User, requiredFieldsUser }

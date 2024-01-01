@@ -88,7 +88,7 @@ const laptopSchema = new Schema(
 )
 
 type laptop = InferSchemaType<typeof laptopSchema>
-const requiredFields: string[] = Object.keys(laptopSchema.obj)
+const requiredFieldsLaptop: string[] = Object.keys(laptopSchema.obj)
 const Laptop = mongoose.model('Laptop', laptopSchema, 'laptops')
 
-export { Laptop, requiredFields }
+export { Laptop, requiredFieldsLaptop }
