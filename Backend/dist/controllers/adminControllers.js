@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.updateLaptop = exports.deleteLaptop = exports.getLaptop = exports.getLaptops = exports.addLaptop = void 0;
 const Laptop_1 = require("../models/Laptop");
-const User_1 = require("../models/User");
+const Admin_1 = require("../models/Admin");
 const generateJwt_1 = __importDefault(require("../helpers/generateJwt"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const addLaptop = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -91,7 +91,7 @@ const getLaptops = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.getLaptops = getLaptops;
 const getLaptop = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const laptop = yield Laptop_1.Laptop.findById(req.params.id);
+        const laptop = yield Laptop_1.Laptop.findById(req.params.id, { timestamps: false });
         if (!laptop) {
             return res.status(404).json({
                 error: 'Laptop not found'
@@ -148,13 +148,13 @@ exports.deleteLaptop = deleteLaptop;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
-        const user = yield User_1.User.findOne({ email });
-        if (!user) {
+        const admin = yield Admin_1.Admin.findOne({ email });
+        if (!admin) {
             res.status(404).json({
                 error: 'User not found'
             });
         }
-        else if (!(yield bcrypt_1.default.compare(password, user.password))) {
+        else if (!(yield bcrypt_1.default.compare(password, admin.password))) {
             res.status(400).json({
                 error: 'Incorrect password'
             });

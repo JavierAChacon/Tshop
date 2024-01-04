@@ -29,10 +29,10 @@ const userSchema = new Schema({
     type: String
   }
 })
-type User = InferSchemaType<typeof userSchema>
-const User = mongoose.model('User', userSchema, 'users')
+type Admin = InferSchemaType<typeof userSchema>
+const Admin = mongoose.model('Admin', userSchema, 'admins')
 const requiredFieldsUser: string[] = Object.keys(userSchema.obj).filter(key => {
   return userSchema.path(key).isRequired
 })
 
-export { User, requiredFieldsUser }
+export { Admin, requiredFieldsUser }

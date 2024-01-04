@@ -14,8 +14,6 @@ const router = express.Router()
 
 router.post('/login', login)
 
-router.use(auth)
-
 router.route('/laptops').post(multerMiddleware, addLaptop).get(getLaptops)
 
 router
@@ -23,5 +21,7 @@ router
   .get(getLaptop)
   .put(multerMiddleware, updateLaptop)
   .delete(deleteLaptop)
+
+//TODO: hacer controlador de forgot passsword
 
 export default router

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { Laptop, requiredFieldsLaptop } from '../models/Laptop'
-import { User } from '../models/User'
+import { Admin } from '../models/Admin'
 import generateJWT from '../helpers/generateJwt'
 import bcrypt from 'bcrypt'
 
@@ -78,7 +78,7 @@ const getLaptops = async (req: Request, res: Response) => {
 
 const getLaptop = async (req: Request, res: Response) => {
   try {
-    const laptop = await Laptop.findById(req.params.id)
+    const laptop = await Laptop.findById(req.params.id, { timestamps: false })
     if (!laptop) {
       return res.status(404).json({
         error: 'Laptop not found'
@@ -136,12 +136,12 @@ const deleteLaptop = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body
-    const user = await User.findOne({ email })
-    if (!user) {
+    const admin = await Admin.findOne({ email })
+    if (!admin) {
       res.status(404).json({
         error: 'User not found'
       })
-    } else if (!(await bcrypt.compare(password, user.password))) {
+    } else if (!(await bcrypt.compare(password, admin.password))) {
       res.status(400).json({
         error: 'Incorrect password'
       })

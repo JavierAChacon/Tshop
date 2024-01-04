@@ -2,8 +2,9 @@ import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import adminRoutes from './routes/adminRoutes'
+import clientRoutes from './routes/clientRoutes'
 import connection from './database/connection'
-
+import { Client } from './models/Client'
 dotenv.config()
 connection()
   .then(result => {
@@ -21,6 +22,7 @@ app.use('/api/images', express.static('images'))
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use('/api/admin', adminRoutes)
+app.use('/api/client', clientRoutes)
 const PORT = process.env.PORT || 4000
 app.listen(PORT, () => {
   console.log('Listening on port:', PORT)
