@@ -21,7 +21,7 @@ const laptopSchema = new Schema(
       required: true,
       trim: true
     },
-    proccesor: {
+    processor: {
       type: String,
       required: true,
       trim: true
