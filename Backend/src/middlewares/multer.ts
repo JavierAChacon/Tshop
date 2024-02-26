@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const mimetype = file.mimetype.split('/')[1]
-    cb(null, req.body.brand + req.body.model + Date.now() + '.' + mimetype)
+    cb(null, req.body.brand + Date.now() + '.' + mimetype)
   }
 })
 
