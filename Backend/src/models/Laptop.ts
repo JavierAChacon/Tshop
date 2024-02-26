@@ -21,6 +21,11 @@ const laptopSchema = new Schema(
       required: true,
       trim: true
     },
+    operativeSystem: {
+      type: String,
+      required: true,
+      trim: true
+    },
     processor: {
       type: String,
       required: true,
@@ -59,5 +64,7 @@ const laptopSchema = new Schema(
 )
 
 export type Laptop = InferSchemaType<typeof laptopSchema>
+
+export const requiredFieldsLaptop = Object.keys(laptopSchema.obj)
 
 export const LaptopModel = mongoose.model('Laptop', laptopSchema, 'laptops')
