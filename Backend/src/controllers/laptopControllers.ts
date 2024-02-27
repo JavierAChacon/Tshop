@@ -45,3 +45,22 @@ export const addLaptop = async (
     return res.status(500).json(error)
   }
 }
+
+export const getLaptops = async (
+  req: Request,
+  res: Response
+): Promise<Response | undefined> => {
+  try {
+    const laptops: Laptop[] = await LaptopModel.find()
+
+    if (laptops.length === 0) {
+      res.status(404).json({
+        error: 'Laptops not found'
+      })
+    }
+
+    return res.json(laptops)
+  } catch (error: unknown) {
+    res.status(500).json(error)
+  }
+}
