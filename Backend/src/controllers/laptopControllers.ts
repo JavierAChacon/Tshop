@@ -86,3 +86,25 @@ export const getLaptop = async (
     res.status(500).json(error)
   }
 }
+
+export const deleteLaptop = async (
+  req: Request,
+  res: Response
+): Promise<Response | undefined> => {
+  try {
+    const idToDeleteLaptop = req.params.id
+    const laptopToDelete = await LaptopModel.findByIdAndDelete(idToDeleteLaptop)
+
+    if (laptopToDelete === null) {
+      return res.status(404).json({
+        error: 'Laptop not found'
+      })
+    }
+
+    return res.json({
+      msg: 'Laptop deleted'
+    })
+  } catch (error: unknown) {
+    res.status(500).json(error)
+  }
+}
