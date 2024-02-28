@@ -64,3 +64,25 @@ export const getLaptops = async (
     res.status(500).json(error)
   }
 }
+
+export const getLaptop = async (
+  req: Request,
+  res: Response
+): Promise<Response | undefined> => {
+  try {
+    const idToGetLaptop = req.params.id
+    const laptopToGet = await LaptopModel.findById(idToGetLaptop)
+
+    if (laptopToGet === null) {
+      return res.status(404).json({
+        error: 'Laptop not found'
+      })
+    }
+
+    return res.json({
+      laptop: laptopToGet
+    })
+  } catch (error: unknown) {
+    res.status(500).json(error)
+  }
+}
