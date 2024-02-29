@@ -108,3 +108,47 @@ export const deleteLaptop = async (
     res.status(500).json(error)
   }
 }
+
+export const updateLaptop = async (
+  req: Request,
+  res: Response
+): Promise<Response | undefined> => {
+  try {
+    const idToUpdateLaptop = req.params.id
+    const updateFields: Laptop = req.body
+    const missingUpdateFields: string[] = []
+    
+    Object.entries(updateFields).forEach(([key, value]) => {
+      if (value === '') {
+        missingUpdateFields.push(key)
+      }
+    })
+
+    if (missingUpdateFields.length === 1) {
+      return res.status(400).json({
+        error: `The field ${missingUpdateFields[0]} is missing`
+      })
+    } else if (missingUpdateFields.length > 1) {
+      return res.status(400).json({
+        error: `The fields ${missingUpdateFields.join(', ')} are missing`
+      })
+    }
+
+    const laptopToUpdate = await LaptopModel.findByIdAndUpdate(
+      idToUpdateLaptop,
+      updateFields
+    )
+
+    if (laptopToUpdate === null) {
+      return res.status(500).json({
+        msg: 'Laptop not found'
+      })
+    }
+
+    res.json({
+      msg: 'Laptop updated'
+    })
+  } catch (error: unknown) {
+    res.status(500).json(error)
+  }
+}
