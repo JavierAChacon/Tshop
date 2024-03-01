@@ -3,6 +3,5 @@ export default {
   content: ['./src/**/*.{html,tsx}'],
   theme: {
     extend: {}
-  },
-  plugins: ['prettier-plugin-tailwindcss']
+  }
 }
