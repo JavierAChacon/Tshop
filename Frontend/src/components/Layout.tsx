@@ -5,7 +5,7 @@ const Layout = (): JSX.Element => {
   return (
     <>
       <Header />
-      <main>
+      <main className='pt-10'>
         <Outlet />
       </main>
       <Footer />
