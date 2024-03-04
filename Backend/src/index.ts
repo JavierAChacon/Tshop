@@ -17,9 +17,10 @@ connection()
 const app = express()
 
 const BASE_URL = process.env.BASE_URL
+const FRONTEND_URL = process.env.FRONTEND_URL
 
 const corsOptions = {
-  origin: [`${BASE_URL}/api/laptops`]
+  origin: [`${BASE_URL}/api/laptops`, FRONTEND_URL]
 }
 
 app.use(cors(corsOptions))
