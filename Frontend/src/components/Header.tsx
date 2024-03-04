@@ -41,7 +41,7 @@ const Header = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   return (
-    <header className='fixed flex h-10 w-full bg-[#25262a] pl-4 text-gray-300'>
+    <header className='fixed flex h-10 w-full bg-black pl-4 text-gray-300'>
       <nav className='flex w-full items-center justify-between'>
         <Link
           to='/'
@@ -63,7 +63,7 @@ const Header = (): JSX.Element => {
             />
           </div>
           <ul
-            className={`${isOpen ? 'right-0' : '-right-full'} absolute top-10 bg-white text-black duration-300 lg:right-0 lg:top-0 lg:flex lg:h-10 lg:items-center lg:bg-[#25262a] lg:text-gray-300`}
+            className={`${isOpen ? 'right-0' : '-right-full'} absolute top-10 bg-white text-black duration-300 lg:right-0 lg:top-0 lg:flex lg:h-10 lg:items-center lg:bg-black lg:text-gray-300`}
           >
             {routes.map(route => {
               const { Icon, title, to } = route
@@ -72,7 +72,7 @@ const Header = (): JSX.Element => {
                 return (
                   <li
                     key={title}
-                    className='hidden duration-300 hover:translate-x-1 hover:text-white lg:block'
+                    className='hidden duration-300 hover:translate-x-1 lg:hover:text-white lg:block'
                   >
                     <Link
                       to={to}
@@ -87,7 +87,7 @@ const Header = (): JSX.Element => {
               return (
                 <li
                   key={title}
-                  className='duration-300 hover:translate-x-1 hover:text-white'
+                  className='duration-300 hover:translate-x-1 lg:hover:text-white'
                 >
                   <Link
                     to={to}
