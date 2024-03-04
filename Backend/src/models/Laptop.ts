@@ -11,6 +11,11 @@ const laptopSchema = new Schema(
       type: Number,
       required: true
     },
+    description: {
+      type: String,
+      required: true,
+      trim: true
+    },
     brand: {
       type: String,
       required: true,
