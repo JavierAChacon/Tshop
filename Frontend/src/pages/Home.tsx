@@ -1,24 +1,9 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-import macBook from '../../public/MacbookAir15.webp'
+import macBook from '/MacbookAir15.webp'
 import { Link } from 'react-router-dom'
 import { FaShoppingCart } from 'react-icons/fa'
-
-export interface Laptop {
-  _id: string
-  price: number
-  stock: number
-  brand: string
-  model: string
-  operativeSystem: string
-  processor: string
-  graphicCard: string
-  storage: number
-  ram: number
-  touchscreen: boolean
-  screen: number
-  images: string[]
-}
+import { Laptop } from '../interfaces'
 
 const Home = (): JSX.Element => {
   const [laptops, setLaptops] = useState<Laptop[]>([])
@@ -26,7 +11,8 @@ const Home = (): JSX.Element => {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       try {
-        const { data } = await axios(`${import.meta.env.VITE_BACKEND_URL}`)
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+        const { data } = await axios(BACKEND_URL)
         setLaptops(data)
       } catch (error) {
         console.log(error)
