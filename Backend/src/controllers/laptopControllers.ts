@@ -1,5 +1,6 @@
 import { LaptopModel, requiredFieldsLaptop } from '../models/Laptop'
 import separateCamelCase from '../helpers/separateCamelCase'
+import { v2 as cloudinary } from 'cloudinary'
 import type { Request, Response } from 'express'
 import type { Laptop } from '../models/Laptop'
 
@@ -9,15 +10,22 @@ export const addLaptop = async (
 ): Promise<Response | undefined> => {
   try {
     const newLaptop: Laptop = { ...req.body }
-    const BASE_URL = process.env.BASE_URL
     const emptyFields: string[] = []
 
     if (req.file !== undefined) {
-      newLaptop.images[0] = `${BASE_URL}/api/images/${req.file.filename}`
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'Tshop'
+      })
+      const imageUrl = result.secure_url
+      newLaptop.images[0] = imageUrl
     } else if (req.files !== undefined && Array.isArray(req.files)) {
-      newLaptop.images = req.files.map(
-        file => `${BASE_URL}/api/images/${file.filename}`
-      )
+      const promises = req.files.map(async file => {
+        const result = await cloudinary.uploader.upload(file.path, {
+          folder: 'Tshop'
+        })
+        return result.secure_url
+      })
+      newLaptop.images = await Promise.all(promises)
     }
 
     requiredFieldsLaptop.forEach(field => {
@@ -42,7 +50,7 @@ export const addLaptop = async (
       msg: 'New laptop added'
     })
   } catch (error: unknown) {
-    return res.status(500).json(error)
+    return res.status(500).send(error)
   }
 }
 
@@ -117,7 +125,7 @@ export const updateLaptop = async (
     const idToUpdateLaptop = req.params.id
     const updateFields: Laptop = req.body
     const missingUpdateFields: string[] = []
-    
+
     Object.entries(updateFields).forEach(([key, value]) => {
       if (value === '') {
         missingUpdateFields.push(key)

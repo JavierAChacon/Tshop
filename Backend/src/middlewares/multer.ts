@@ -2,9 +2,6 @@ import multer, { MulterError } from 'multer'
 import type { Request, Response, NextFunction } from 'express'
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './images')
-  },
   filename: function (req, file, cb) {
     const mimetype = file.mimetype.split('/')[1]
     cb(null, req.body.brand + Date.now() + '.' + mimetype)
