@@ -1,24 +1,21 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-import macBook from '/MacbookAir15.webp'
+import macBook from '../../public/MacbookAir15.webp'
 import { Link } from 'react-router-dom'
 import { FaShoppingCart } from 'react-icons/fa'
-import { Laptop } from '../interfaces'
+import Loader from '../components/Loader'
+import type { Laptop } from '../interfaces'
 
 const Home = (): JSX.Element => {
   const [laptops, setLaptops] = useState<Laptop[]>([])
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
-      try {
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
-        const { data } = await axios(BACKEND_URL)
-        setLaptops(data)
-      } catch (error) {
-        console.log(error)
-      }
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+      const { data } = await axios(BACKEND_URL)
+      setLaptops(data)
     }
-    fetchData().then().catch(console.error)
+    fetchData().catch(error => console.error(error))
   }, [])
 
   return (
@@ -61,37 +58,45 @@ const Home = (): JSX.Element => {
         </div>
       </section>
 
-      <section className='bg-slate-200 pb-4 pt-2'>
-        <h2 className='mb-2 ml-3 text-2xl font-semibold'>New Arrivals</h2>
+      {laptops.length === 0
+        ? (
+          <section className='flex items-center justify-center bg-slate-200 py-5'>
+            <Loader />
+          </section>
+          )
+        : (
+          <section className='bg-slate-200 pb-4 pt-2'>
+            <h2 className='mb-2 ml-3 text-2xl font-semibold'>New Arrivals</h2>
 
-        <div className='flex gap-x-5 overflow-x-scroll px-3'>
-          {laptops?.map(laptop => {
-            const { _id, images, brand, model, price } = laptop
+            <div className='flex gap-x-5 overflow-x-scroll px-3'>
+              {laptops?.map(laptop => {
+                const { _id, images, brand, model, price } = laptop
 
-            return (
-              <div key={_id}>
-                <Link to={_id} className='block w-72 rounded-lg bg-white p-4'>
-                  <img src={images[0]} alt='' />
-                </Link>
+                return (
+                  <div key={_id}>
+                    <Link to={_id} className='block w-72 rounded-lg bg-white p-4'>
+                      <img src={images[0]} alt='' />
+                    </Link>
 
-                <h3 className='text-lg font-bold'>
-                  <Link to={_id}>
-                    {brand} {model}
-                  </Link>
-                </h3>
+                    <h3 className='text-lg font-bold'>
+                      <Link to={_id}>
+                        {brand} {model}
+                      </Link>
+                    </h3>
 
-                <div className='flex items-center gap-x-5'>
-                  <p className='text-lg font-semibold'>${price}</p>
+                    <div className='flex items-center gap-x-5'>
+                      <p className='text-lg font-semibold'>${price}</p>
 
-                  <button className='rounded-lg border-2 border-black p-1 duration-300 hover:bg-black hover:text-white'>
-                    Add to cart
-                  </button>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </section>
+                      <button className='rounded-lg border-2 border-black p-1 duration-300 hover:bg-black hover:text-white'>
+                        Add to cart
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+          )}
     </>
   )
 }
