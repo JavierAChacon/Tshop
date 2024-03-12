@@ -41,7 +41,7 @@ const Header = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   return (
-    <header className='fixed flex h-10 w-full bg-black pl-4 text-gray-300 max-w-screen-2xl'>
+    <header className='fixed flex h-10 w-full bg-black pl-4 text-gray-300 max-w-screen-2xl z-[1]'>
       <nav className='flex w-full items-center justify-between'>
         <Link
           to='/'
