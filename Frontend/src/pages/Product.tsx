@@ -2,20 +2,22 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Loader from '../components/Loader'
-import { FaShoppingCart } from 'react-icons/fa'
+import { FaMinus, FaPlus, FaShoppingCart } from 'react-icons/fa'
 import capitalizeCamelCase from '../helpers/capitalizeCamelCase'
-import type { Laptop } from '../interfaces'
+import type { CartItem, Laptop } from '../interfaces'
+import useCart from '../hooks/useCart'
 
 const Product = (): JSX.Element => {
   const { id } = useParams()
   const [laptop, setLaptop] = useState<Laptop>()
   const [imageSelected, setImageSelected] = useState<number>(0)
-  // const [quantity, setQuantity] = useState<number>()
+  const [quantity, setQuantity] = useState<number>(1)
+  const { cart, addToCart } = useCart()
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
-      const { data } = await axios(`${BACKEND_URL}/${id}`)
+      const { data } = await axios(`${BACKEND_URL}/laptops/${id}`)
       setLaptop(data.laptop)
     }
     fetchData().catch(error => console.error(error))
@@ -41,7 +43,18 @@ const Product = (): JSX.Element => {
       ].includes(key)
     )
 
-    console.log(techSpecs)
+    const handleClick = (): void => {
+      if (id !== undefined) {
+        const newItem: CartItem = {
+          id,
+          name: `${brand} ${model}`,
+          price,
+          quantity,
+          images
+        }
+        addToCart(newItem)
+      }
+    }
 
     return (
       <div className='p-5 md:mx-auto md:w-4/5 lg:p-0'>
@@ -76,20 +89,42 @@ const Product = (): JSX.Element => {
             <p>{description}</p>
 
             <strong className='mb-1 mt-4 block text-xl'>Quantity</strong>
-            <select
-              // onChange={e => setQuantity(Number(e.target.value))}
-              className='w-16 rounded-md border-2 border-black py-1 pl-2 text-lg'
-            >
-              {Array.from({ length: stock }, (_, index) => index + 1).map(
-                option => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                )
-              )}
-            </select>
+            {stock !== 0 ? (
+              <div className='flex items-center'>
+                <button
+                  onClick={() => setQuantity(quantity - 1)}
+                  disabled={quantity === 1}
+                  className='flex items-center rounded-l-md bg-gray-200 p-2'
+                >
+                  <FaMinus />
+                </button>
+                <input
+                  type='number'
+                  value={quantity}
+                  onChange={e => setQuantity(Number(e.target.value))}
+                  min='1'
+                  max={stock}
+                  className='h-8 w-16 border-2 border-black text-center'
+                />
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  disabled={quantity === stock || stock === 0}
+                  className='rounded-r-md bg-gray-200 p-2'
+                >
+                  <FaPlus />
+                </button>
+                {stock === 0 && (
+                  <span className='ml-2 text-red-500'>Agotado</span>
+                )}
+              </div>
+            ) : (
+              <strong>Out of stock</strong>
+            )}
 
-            <button className='mx-auto mt-4 flex w-full items-center justify-center gap-x-2 rounded-lg border-2 border-black py-2  text-lg duration-300 hover:bg-black hover:text-white md:w-4/5 md:px-7'>
+            <button
+              onClick={handleClick}
+              className='mx-auto mt-4 flex w-full items-center justify-center gap-x-2 rounded-lg border-2 border-black py-2  text-lg duration-300 hover:bg-black hover:text-white md:w-4/5 md:px-7'
+            >
               Add to cart <FaShoppingCart />
             </button>
           </div>
