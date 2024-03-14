@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 export interface Laptop {
   _id: string
   price: number
@@ -13,4 +15,21 @@ export interface Laptop {
   touchscreen: boolean
   screen: number
   images: string[]
+}
+
+export interface CartItem {
+  name: string
+  images: string[]
+  id: string
+  price: number
+  quantity: number
+}
+
+export interface CartContextType {
+  addToCart: (item: CartItem) => void
+  cart: CartItem[]
+}
+
+export interface CartProviderProps {
+  children: ReactNode
 }

@@ -1,7 +1,8 @@
 import { useContext } from 'react'
 import CartContext from '../context/CartContext'
+import { CartContextType } from '../interfaces'
 
-const useCart = (): unknown => {
+const useCart = (): CartContextType => {
   return useContext(CartContext)
 }
 
