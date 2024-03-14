@@ -13,7 +13,7 @@ const Header = (): JSX.Element => {
   const routes = [
     {
       title: 'Cart',
-      to: '/',
+      to: '/cart',
       Icon: FaShoppingCart
     },
     {
@@ -41,7 +41,7 @@ const Header = (): JSX.Element => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
 
   return (
-    <header className='fixed flex h-10 w-full bg-black pl-4 text-gray-300 max-w-screen-2xl z-[1]'>
+    <header className='fixed z-[1] flex h-10 w-full max-w-screen-2xl bg-black pl-4 text-gray-300'>
       <nav className='flex w-full items-center justify-between'>
         <Link
           to='/'
@@ -51,7 +51,7 @@ const Header = (): JSX.Element => {
         </Link>
 
         <div className='flex items-center gap-x-2 duration-300 '>
-          <Link to='/'>
+          <Link to='/cart'>
             <FaShoppingCart className='text-xl hover:scale-105 lg:hidden' />
           </Link>
           <div className='lg:hidden'>
@@ -72,7 +72,7 @@ const Header = (): JSX.Element => {
                 return (
                   <li
                     key={title}
-                    className='hidden duration-300 hover:translate-x-1 lg:hover:text-white lg:block'
+                    className='hidden duration-300 hover:translate-x-1 lg:block lg:hover:text-white'
                   >
                     <Link
                       to={to}

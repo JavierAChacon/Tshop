@@ -11,7 +11,7 @@ const Home = (): JSX.Element => {
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+      const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}/laptops`
       const { data } = await axios(BACKEND_URL)
       setLaptops(data)
     }

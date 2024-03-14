@@ -2,16 +2,26 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Product from './pages/Product'
+import Cart from './pages/Cart'
+import CheckoutSuccess from './pages/CheckoutSuccess'
+import { CartProvider } from './context/CartContext'
 
 function App (): JSX.Element {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path='/:id' element={<Product />} />
-        </Route>
-      </Routes>
+      <CartProvider>
+        <Routes>
+          <Route path='/' element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path='/:id' element={<Product />} />
+            <Route path='/cart' element={<Cart />} />
+          </Route>
+
+          <Route path='checkout' element={<Layout />}>
+            <Route path='/checkout/success' element={<CheckoutSuccess />} />
+          </Route>
+        </Routes>
+      </CartProvider>
     </BrowserRouter>
   )
 }

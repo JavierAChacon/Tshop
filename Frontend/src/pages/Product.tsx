@@ -12,7 +12,7 @@ const Product = (): JSX.Element => {
   const [laptop, setLaptop] = useState<Laptop>()
   const [imageSelected, setImageSelected] = useState<number>(0)
   const [quantity, setQuantity] = useState<number>(1)
-  const { cart, addToCart } = useCart()
+  const { addToCart } = useCart()
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
@@ -89,37 +89,39 @@ const Product = (): JSX.Element => {
             <p>{description}</p>
 
             <strong className='mb-1 mt-4 block text-xl'>Quantity</strong>
-            {stock !== 0 ? (
-              <div className='flex items-center'>
-                <button
-                  onClick={() => setQuantity(quantity - 1)}
-                  disabled={quantity === 1}
-                  className='flex items-center rounded-l-md bg-gray-200 p-2'
-                >
-                  <FaMinus />
-                </button>
-                <input
-                  type='number'
-                  value={quantity}
-                  onChange={e => setQuantity(Number(e.target.value))}
-                  min='1'
-                  max={stock}
-                  className='h-8 w-16 border-2 border-black text-center'
-                />
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  disabled={quantity === stock || stock === 0}
-                  className='rounded-r-md bg-gray-200 p-2'
-                >
-                  <FaPlus />
-                </button>
-                {stock === 0 && (
-                  <span className='ml-2 text-red-500'>Agotado</span>
+            {stock !== 0
+              ? (
+                <div className='flex items-center'>
+                  <button
+                    onClick={() => setQuantity(quantity - 1)}
+                    disabled={quantity === 1}
+                    className='flex items-center rounded-l-md bg-gray-200 p-2'
+                  >
+                    <FaMinus />
+                  </button>
+                  <input
+                    type='number'
+                    value={quantity}
+                    onChange={e => setQuantity(Number(e.target.value))}
+                    min='1'
+                    max={stock}
+                    className='h-8 w-16 border-2 border-black text-center'
+                  />
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    disabled={quantity === stock || stock === 0}
+                    className='rounded-r-md bg-gray-200 p-2'
+                  >
+                    <FaPlus />
+                  </button>
+                  {stock === 0 && (
+                    <span className='ml-2 text-red-500'>Agotado</span>
+                  )}
+                </div>
+                )
+              : (
+                <strong>Out of stock</strong>
                 )}
-              </div>
-            ) : (
-              <strong>Out of stock</strong>
-            )}
 
             <button
               onClick={handleClick}
