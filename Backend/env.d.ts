@@ -8,6 +8,7 @@ declare global {
       CLOUDINARY_CLOUD_NAME: string
       CLOUDINARY_API_KEY: string
       CLOUDINARY_API_SECRET: string
+      STRIPE_SECRET_KEY: string
     }
   }
 }
