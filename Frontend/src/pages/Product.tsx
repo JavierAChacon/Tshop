@@ -6,6 +6,7 @@ import { FaMinus, FaPlus, FaShoppingCart } from 'react-icons/fa'
 import capitalizeCamelCase from '../helpers/capitalizeCamelCase'
 import type { CartItem, Laptop } from '../interfaces'
 import useCart from '../hooks/useCart'
+import useNotification from '../hooks/useNotification'
 
 const Product = (): JSX.Element => {
   const { id } = useParams()
@@ -13,6 +14,7 @@ const Product = (): JSX.Element => {
   const [imageSelected, setImageSelected] = useState<number>(0)
   const [quantity, setQuantity] = useState<number>(1)
   const { addToCart } = useCart()
+  const { showNotification } = useNotification()
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
@@ -43,7 +45,7 @@ const Product = (): JSX.Element => {
       ].includes(key)
     )
 
-    const handleClick = (): void => {
+    const handleCart = (): void => {
       if (id !== undefined) {
         const newItem: CartItem = {
           id,
@@ -53,6 +55,11 @@ const Product = (): JSX.Element => {
           images
         }
         addToCart(newItem)
+        if (quantity === 1) {
+          showNotification(`Added ${quantity} item to cart`)
+        } else if (quantity > 1) {
+          showNotification(`Added ${quantity} items to cart`)
+        }
       }
     }
 
@@ -114,9 +121,6 @@ const Product = (): JSX.Element => {
                   >
                     <FaPlus />
                   </button>
-                  {stock === 0 && (
-                    <span className='ml-2 text-red-500'>Agotado</span>
-                  )}
                 </div>
                 )
               : (
@@ -124,7 +128,7 @@ const Product = (): JSX.Element => {
                 )}
 
             <button
-              onClick={handleClick}
+              onClick={handleCart}
               className='mx-auto mt-4 flex w-full items-center justify-center gap-x-2 rounded-lg border-2 border-black py-2  text-lg duration-300 hover:bg-black hover:text-white md:w-4/5 md:px-7'
             >
               Add to cart <FaShoppingCart />

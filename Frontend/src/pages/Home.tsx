@@ -4,10 +4,14 @@ import macBook from '../../public/MacbookAir15.webp'
 import { Link } from 'react-router-dom'
 import { FaShoppingCart } from 'react-icons/fa'
 import Loader from '../components/Loader'
-import type { Laptop } from '../interfaces'
+import type { CartItem, Laptop } from '../interfaces'
+import useCart from '../hooks/useCart'
+import useNotification from '../hooks/useNotification'
 
 const Home = (): JSX.Element => {
   const [laptops, setLaptops] = useState<Laptop[]>([])
+  const { addToCart } = useCart()
+  const { showNotification } = useNotification()
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
@@ -72,6 +76,18 @@ const Home = (): JSX.Element => {
               {laptops?.map(laptop => {
                 const { _id, images, brand, model, price } = laptop
 
+                const handleCart = (): void => {
+                  const laptopToAdd: CartItem = {
+                    id: _id,
+                    images,
+                    name: `${brand} ${model}`,
+                    price,
+                    quantity: 1
+                  }
+                  addToCart(laptopToAdd)
+                  showNotification('Added 1 item to cart')
+                }
+
                 return (
                   <div key={_id}>
                     <Link to={_id} className='block w-72 rounded-lg bg-white p-4'>
@@ -87,7 +103,7 @@ const Home = (): JSX.Element => {
                     <div className='flex items-center gap-x-5'>
                       <p className='text-lg font-semibold'>${price}</p>
 
-                      <button className='rounded-lg border-2 border-black p-1 duration-300 hover:bg-black hover:text-white'>
+                      <button onClick={handleCart} className='rounded-lg border-2 border-black p-1 duration-300 hover:bg-black hover:text-white'>
                         Add to cart
                       </button>
                     </div>
