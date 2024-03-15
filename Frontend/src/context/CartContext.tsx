@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from 'react'
 import type {
   CartContextType,
   CartItem,
-  CartProviderProps
+  ProviderProps
 } from '../interfaces'
 
 const CartContext = createContext<CartContextType>({
@@ -10,7 +10,7 @@ const CartContext = createContext<CartContextType>({
   addToCart: () => {}
 })
 
-export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
+export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([])
   const SHOPPING_CART = 'SHOPPING_CART'
 

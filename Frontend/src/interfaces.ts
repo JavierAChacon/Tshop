@@ -30,6 +30,13 @@ export interface CartContextType {
   cart: CartItem[]
 }
 
-export interface CartProviderProps {
+export interface ProviderProps {
   children: ReactNode
+}
+
+export interface NotificationContextType {
+  isVisible: boolean
+  message: string
+  showNotification: (message: string) => void
+  closeNotification: () => void
 }
