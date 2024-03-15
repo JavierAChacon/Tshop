@@ -5,22 +5,25 @@ import Product from './pages/Product'
 import Cart from './pages/Cart'
 import CheckoutSuccess from './pages/CheckoutSuccess'
 import { CartProvider } from './context/CartContext'
+import { NotificationProvider } from './context/NotificationContext'
 
 function App (): JSX.Element {
   return (
     <BrowserRouter>
       <CartProvider>
-        <Routes>
-          <Route path='/' element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path='/:id' element={<Product />} />
-            <Route path='/cart' element={<Cart />} />
-          </Route>
+        <NotificationProvider>
+          <Routes>
+            <Route path='/' element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path='/:id' element={<Product />} />
+              <Route path='/cart' element={<Cart />} />
+            </Route>
 
-          <Route path='checkout' element={<Layout />}>
-            <Route path='/checkout/success' element={<CheckoutSuccess />} />
-          </Route>
-        </Routes>
+            <Route path='checkout' element={<Layout />}>
+              <Route path='/checkout/success' element={<CheckoutSuccess />} />
+            </Route>
+          </Routes>
+        </NotificationProvider>
       </CartProvider>
     </BrowserRouter>
   )
