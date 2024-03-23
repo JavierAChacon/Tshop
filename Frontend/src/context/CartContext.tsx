@@ -7,11 +7,13 @@ import type {
 
 const CartContext = createContext<CartContextType>({
   cart: [],
-  addToCart: () => {}
+  addToCart: () => {},
+  subtotal: 0
 })
 
 export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>([])
+  const [subtotal, setSubtotal] = useState<number>(0)
   const SHOPPING_CART = 'SHOPPING_CART'
 
   const addToCart = (item: CartItem): void => {
@@ -38,13 +40,18 @@ export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
   }, [])
 
   useEffect(() => {
+    const newSubtotal = cart.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    )
+    setSubtotal(newSubtotal)
     if (cart.length !== 0) {
       localStorage.setItem(SHOPPING_CART, JSON.stringify(cart))
     }
   }, [cart])
 
   return (
-    <CartContext.Provider value={{ cart, addToCart }}>
+    <CartContext.Provider value={{ cart, addToCart, subtotal }}>
       {children}
     </CartContext.Provider>
   )
