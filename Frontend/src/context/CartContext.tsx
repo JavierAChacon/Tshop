@@ -1,20 +1,19 @@
 import { createContext, useEffect, useState } from 'react'
-import type {
-  CartContextType,
-  CartItem,
-  ProviderProps
-} from '../interfaces'
+import type { CartContextType, CartItem, ProviderProps } from '../interfaces'
 
 const CartContext = createContext<CartContextType>({
   cart: [],
+  subtotal: 0,
   addToCart: () => {},
-  subtotal: 0
+  deleteItem: () => {}
 })
 
 export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
-  const [cart, setCart] = useState<CartItem[]>([])
-  const [subtotal, setSubtotal] = useState<number>(0)
   const SHOPPING_CART = 'SHOPPING_CART'
+  // eslint-disable-next-line
+  const initialCart: CartItem[] = JSON.parse(localStorage.getItem(SHOPPING_CART) || '[]')
+  const [cart, setCart] = useState<CartItem[]>(initialCart)
+  const [subtotal, setSubtotal] = useState<number>(0)
 
   const addToCart = (item: CartItem): void => {
     const isItemInCart = cart.find(cartItem => cartItem.id === item.id)
@@ -32,6 +31,11 @@ export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
     }
   }
 
+  const deleteItem = (item: CartItem): void => {
+    const updatedCart = cart.filter(cartItem => item.id !== cartItem.id)
+    setCart(updatedCart)
+  }
+
   useEffect(() => {
     const cartItems = localStorage.getItem(SHOPPING_CART)
     if (cartItems !== null) {
@@ -45,13 +49,14 @@ export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
       0
     )
     setSubtotal(newSubtotal)
-    if (cart.length !== 0) {
+
+    if (cart !== null) {
       localStorage.setItem(SHOPPING_CART, JSON.stringify(cart))
     }
   }, [cart])
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, subtotal }}>
+    <CartContext.Provider value={{ cart, addToCart, subtotal, deleteItem }}>
       {children}
     </CartContext.Provider>
   )

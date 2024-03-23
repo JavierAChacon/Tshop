@@ -29,6 +29,7 @@ export interface CartContextType {
   addToCart: (item: CartItem) => void
   cart: CartItem[]
   subtotal: number
+  deleteItem: (item: CartItem) => void
 }
 
 export interface ProviderProps {

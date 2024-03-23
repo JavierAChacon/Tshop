@@ -3,7 +3,7 @@ import useCart from '../hooks/useCart'
 import { FaMinus, FaPlus } from 'react-icons/fa'
 
 const Cart = (): JSX.Element => {
-  const { cart, subtotal } = useCart()
+  const { cart, subtotal, deleteItem } = useCart()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
   const handleCheckout = async (): Promise<void> => {
@@ -69,7 +69,7 @@ const Cart = (): JSX.Element => {
                 </div>
 
                 <button
-                  // onClick={() => deleteItem(item)}
+                  onClick={() => deleteItem(item)}
                   className='rounded-md border-2 border-black p-1 text-sm transition-colors duration-300 hover:border-white hover:bg-red-500 hover:text-white'
                 >
                   Remove
@@ -109,7 +109,7 @@ const Cart = (): JSX.Element => {
               Calculated at checkout
             </div>
             <button
-              onClick={() => handleCheckout}
+              onClick={handleCheckout}
               className='col-span-full mt-4 rounded-lg bg-black p-1 text-xl text-white'
             >
               Checkout
