@@ -67,7 +67,7 @@ const Product = (): JSX.Element => {
       <div className='p-5 md:mx-auto md:w-4/5 lg:p-0'>
         <section className='flex-row-reverse items-center justify-between lg:flex lg:gap-x-32'>
           <div className='lg:w-1/2'>
-            <div className='cursor-pointer lg:mx-auto lg:w-4/5'>
+            <div className='container mx-auto cursor-pointer max-lg:my-5 lg:mx-auto lg:flex lg:h-96 lg:w-4/5 lg:items-center'>
               <img src={images[imageSelected]} alt={brand + '' + model} />
             </div>
 
@@ -76,7 +76,7 @@ const Product = (): JSX.Element => {
                 <div
                   key={image}
                   onClick={() => setImageSelected(index)}
-                  className='mx-auto cursor-pointer border-2 p-1 hover:border-gray-700'
+                  className='mx-auto flex h-full cursor-pointer items-center border-2 p-1 hover:border-gray-700'
                 >
                   <img src={image} />
                 </div>
@@ -96,36 +96,34 @@ const Product = (): JSX.Element => {
             <p>{description}</p>
 
             <strong className='mb-1 mt-4 block text-xl'>Quantity</strong>
-            {stock !== 0
-              ? (
-                <div className='flex items-center'>
-                  <button
-                    onClick={() => setQuantity(quantity - 1)}
-                    disabled={quantity === 1}
-                    className='flex items-center rounded-l-md bg-gray-200 p-2'
-                  >
-                    <FaMinus />
-                  </button>
-                  <input
-                    type='number'
-                    value={quantity}
-                    onChange={e => setQuantity(Number(e.target.value))}
-                    min='1'
-                    max={stock}
-                    className='h-8 w-16 border-2 border-black text-center'
-                  />
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    disabled={quantity === stock || stock === 0}
-                    className='rounded-r-md bg-gray-200 p-2'
-                  >
-                    <FaPlus />
-                  </button>
-                </div>
-                )
-              : (
-                <strong>Out of stock</strong>
-                )}
+            {stock !== 0 ? (
+              <div className='flex items-center'>
+                <button
+                  onClick={() => setQuantity(quantity - 1)}
+                  disabled={quantity === 1}
+                  className='flex items-center rounded-l-md bg-gray-200 p-2'
+                >
+                  <FaMinus />
+                </button>
+                <input
+                  type='number'
+                  value={quantity}
+                  onChange={e => setQuantity(Number(e.target.value))}
+                  min='1'
+                  max={stock}
+                  className='h-8 w-16 border-2 border-black text-center'
+                />
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  disabled={quantity === stock || stock === 0}
+                  className='rounded-r-md bg-gray-200 p-2'
+                >
+                  <FaPlus />
+                </button>
+              </div>
+            ) : (
+              <strong>Out of stock</strong>
+            )}
 
             <button
               onClick={handleCart}
@@ -152,7 +150,13 @@ const Product = (): JSX.Element => {
                       ? key.toUpperCase()
                       : capitalizeCamelCase(key)}
                   </h3>
-                  <span>{value === true ? 'Yes' : value}</span>
+                  <span>
+                    {key === 'touchscreen' && value === false
+                      ? 'No'
+                      : value === true && key === 'touchscreen'
+                        ? 'Yes'
+                        : value}
+                  </span>
                 </div>
               </div>
             ))}

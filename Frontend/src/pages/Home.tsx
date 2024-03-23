@@ -90,11 +90,11 @@ const Home = (): JSX.Element => {
 
                 return (
                   <div key={_id}>
-                    <Link to={_id} className='block w-72 rounded-lg bg-white p-4'>
+                    <Link to={_id} className='w-72 rounded-lg bg-white p-4 h-72 flex items-center'>
                       <img src={images[0]} alt='' />
                     </Link>
 
-                    <h3 className='text-lg font-bold'>
+                    <h3 className='text-lg font-bold mt-2'>
                       <Link to={_id}>
                         {brand} {model}
                       </Link>
