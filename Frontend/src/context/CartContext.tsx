@@ -5,7 +5,9 @@ const CartContext = createContext<CartContextType>({
   cart: [],
   subtotal: 0,
   addToCart: () => {},
-  deleteItem: () => {}
+  deleteItem: () => {},
+  updateQuantity: () => {},
+  getQuantityInCart: () => 0
 })
 
 export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
@@ -36,6 +38,19 @@ export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
     setCart(updatedCart)
   }
 
+  const updateQuantity = (itemId: string, newQuantity: number): void => {
+    setCart(prevCart =>
+      prevCart.map(item =>
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      )
+    )
+  }
+
+  const getQuantityInCart = (itemId: string | undefined): number => {
+    const itemInCart = cart.find(item => item.id === itemId)
+    return itemInCart !== undefined ? itemInCart.quantity : 0
+  }
+
   useEffect(() => {
     const cartItems = localStorage.getItem(SHOPPING_CART)
     if (cartItems !== null) {
@@ -56,7 +71,9 @@ export const CartProvider: React.FC<ProviderProps> = ({ children }) => {
   }, [cart])
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, subtotal, deleteItem }}>
+    <CartContext.Provider
+      value={{ cart, addToCart, subtotal, deleteItem, updateQuantity, getQuantityInCart }}
+    >
       {children}
     </CartContext.Provider>
   )

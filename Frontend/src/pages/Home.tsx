@@ -74,7 +74,7 @@ const Home = (): JSX.Element => {
 
             <div className='flex gap-x-5 overflow-x-scroll px-3'>
               {laptops?.map(laptop => {
-                const { _id, images, brand, model, price } = laptop
+                const { _id, images, brand, model, price, stock } = laptop
 
                 const handleCart = (): void => {
                   const laptopToAdd: CartItem = {
@@ -82,7 +82,8 @@ const Home = (): JSX.Element => {
                     images,
                     name: `${brand} ${model}`,
                     price,
-                    quantity: 1
+                    quantity: 1,
+                    stock
                   }
                   addToCart(laptopToAdd)
                   showNotification('Added 1 item to cart')

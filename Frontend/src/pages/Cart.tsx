@@ -1,10 +1,13 @@
 import axios from 'axios'
 import useCart from '../hooks/useCart'
 import { FaMinus, FaPlus } from 'react-icons/fa'
+import { useEffect, useState } from 'react'
+import useNotification from '../hooks/useNotification'
 
 const Cart = (): JSX.Element => {
-  const { cart, subtotal, deleteItem } = useCart()
+  const { cart, subtotal, deleteItem, updateQuantity } = useCart()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+  const { showNotification } = useNotification()
 
   const handleCheckout = async (): Promise<void> => {
     const { data } = await axios.post(
@@ -18,10 +21,20 @@ const Cart = (): JSX.Element => {
     <div className='container mx-auto min-h-dvh gap-x-3 px-5 pb-8 md:flex lg:w-[90%]'>
       <div className='flex flex-col gap-y-3 md:w-4/6'>
         <h1 className='mt-3 text-center font-semibold lg:text-2xl'>
-          Your Cart
+          {cart.length !== 0 ? 'Your Cart' : 'Your Cart is Empty'}
         </h1>
         {cart.map(item => {
-          const { name, price, quantity, images } = item
+          const { name, price, images, id, stock } = item
+          const [quantity, setQuantity] = useState(item.quantity)
+
+          if (quantity > stock) {
+            showNotification(`There's only avaliable ${stock} ${name} units`, )
+          }
+
+          useEffect(() => {
+            updateQuantity(id, quantity)
+          }, [quantity])
+
           return (
             <div
               key={item.id}
@@ -43,7 +56,7 @@ const Cart = (): JSX.Element => {
               <div className='ml-auto flex flex-col gap-x-3 gap-y-3 md:flex-row'>
                 <div className='flex items-center'>
                   <button
-                    // onClick={}
+                    onClick={() => setQuantity(quantity - 1)}
                     disabled={quantity === 1}
                     className='flex items-center rounded-l-md bg-gray-200 p-1 md:p-2'
                   >
@@ -53,15 +66,14 @@ const Cart = (): JSX.Element => {
                   <input
                     type='number'
                     value={quantity}
-                    // onChange={}
+                    onChange={e => setQuantity(Number(e.target.value))}
                     min='1'
-                    // max={stock}
                     className='h-6 w-10 border-2 border-black text-center md:h-8 md:w-16'
                   />
 
                   <button
-                    // onClick={() => setQuantity(quantity + 1)}
-                    // disabled={quantity === stock || stock === 0}
+                    onClick={() => setQuantity(quantity + 1)}
+                    disabled={quantity === stock || stock === 0}
                     className='rounded-r-md bg-gray-200 p-1 md:p-2'
                   >
                     <FaPlus />

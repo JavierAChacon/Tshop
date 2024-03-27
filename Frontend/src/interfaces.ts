@@ -23,6 +23,7 @@ export interface CartItem {
   id: string
   price: number
   quantity: number
+  stock: number
 }
 
 export interface CartContextType {
@@ -30,6 +31,8 @@ export interface CartContextType {
   cart: CartItem[]
   subtotal: number
   deleteItem: (item: CartItem) => void
+  updateQuantity: (itemId: string, newQuantity: number) => void
+  getQuantityInCart: (itemId: string | undefined) => number
 }
 
 export interface ProviderProps {

@@ -13,7 +13,7 @@ const Product = (): JSX.Element => {
   const [laptop, setLaptop] = useState<Laptop>()
   const [imageSelected, setImageSelected] = useState<number>(0)
   const [quantity, setQuantity] = useState<number>(1)
-  const { addToCart } = useCart()
+  const { addToCart, getQuantityInCart } = useCart()
   const { showNotification } = useNotification()
 
   useEffect(() => {
@@ -45,6 +45,10 @@ const Product = (): JSX.Element => {
       ].includes(key)
     )
 
+    if (quantity > stock - getQuantityInCart(id)) {
+      showNotification(`There's only avaliable ${stock - getQuantityInCart(id)} units`)
+    }
+
     const handleCart = (): void => {
       if (id !== undefined) {
         const newItem: CartItem = {
@@ -52,7 +56,8 @@ const Product = (): JSX.Element => {
           name: `${brand} ${model}`,
           price,
           quantity,
-          images
+          images,
+          stock
         }
         addToCart(newItem)
         if (quantity === 1) {
@@ -88,48 +93,45 @@ const Product = (): JSX.Element => {
             <h1 className='mt-3 text-3xl font-bold text-gray-700'>
               {brand} {model}
             </h1>
-
             <strong className='mb-2 block text-2xl font-semibold'>
               ${price}
             </strong>
-
             <p>{description}</p>
-
             <strong className='mb-1 mt-4 block text-xl'>Quantity</strong>
-            {stock !== 0 ? (
-              <div className='flex items-center'>
-                <button
-                  onClick={() => setQuantity(quantity - 1)}
-                  disabled={quantity === 1}
-                  className='flex items-center rounded-l-md bg-gray-200 p-2'
-                >
-                  <FaMinus />
-                </button>
-                <input
-                  type='number'
-                  value={quantity}
-                  onChange={e => setQuantity(Number(e.target.value))}
-                  min='1'
-                  max={stock}
-                  className='h-8 w-16 border-2 border-black text-center'
-                />
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  disabled={quantity === stock || stock === 0}
-                  className='rounded-r-md bg-gray-200 p-2'
-                >
-                  <FaPlus />
-                </button>
-              </div>
-            ) : (
-              <strong>Out of stock</strong>
-            )}
+            <div className='flex items-center'>
+              <button
+                onClick={() => setQuantity(quantity - 1)}
+                disabled={quantity === 1}
+                className='flex items-center rounded-l-md bg-gray-200 p-2'
+              >
+                <FaMinus />
+              </button>
+              <input
+                type='number'
+                value={quantity}
+                onChange={e => setQuantity(Number(e.target.value))}
+                min='1'
+                max={stock}
+                className='h-8 w-16 border-2 border-black text-center disabled:bg-gray-300 disabled:text-gray-600'
+              />
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                disabled={getQuantityInCart(id) + quantity >= stock}
+                className='rounded-r-md bg-gray-200 p-2'
+              >
+                <FaPlus />
+              </button>
+            </div>
 
             <button
               onClick={handleCart}
-              className='mx-auto mt-4 flex w-full items-center justify-center gap-x-2 rounded-lg border-2 border-black py-2  text-lg duration-300 hover:bg-black hover:text-white md:w-4/5 md:px-7'
+              disabled={getQuantityInCart(id) + quantity > stock}
+              className='mx-auto mt-4 flex w-full items-center justify-center gap-x-2 rounded-lg border-2 border-black py-2  text-lg duration-300 hover:bg-black hover:text-white disabled:bg-gray-300 disabled:hover:text-black md:w-4/5 md:px-7'
             >
-              Add to cart <FaShoppingCart />
+              {getQuantityInCart(id) + quantity <= stock
+                ? 'Add to cart'
+                : 'Out of stock'}
+              <FaShoppingCart />
             </button>
           </div>
         </section>
