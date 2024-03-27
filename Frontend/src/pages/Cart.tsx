@@ -28,7 +28,7 @@ const Cart = (): JSX.Element => {
           const [quantity, setQuantity] = useState(item.quantity)
 
           if (quantity > stock) {
-            showNotification(`There's only avaliable ${stock} ${name} units`, )
+            showNotification(`There's only avaliable ${stock} ${name} units`)
           }
 
           useEffect(() => {

@@ -12,15 +12,33 @@ const Home = (): JSX.Element => {
   const [laptops, setLaptops] = useState<Laptop[]>([])
   const { addToCart } = useCart()
   const { showNotification } = useNotification()
+  const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}/laptops`
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
-      const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}/laptops`
       const { data } = await axios(BACKEND_URL)
       setLaptops(data)
     }
     fetchData().catch(error => console.error(error))
   }, [])
+
+  const laptopToFind: Laptop | undefined = laptops.find(
+    laptop => laptop.model === 'MacBook Air 15'
+  )
+  const handleCart = (): void => {
+    if (laptopToFind !== undefined) {
+      const laptopToAdd: CartItem = {
+        id: laptopToFind._id,
+        name: `${laptopToFind.brand} ${laptopToFind.model}`,
+        price: laptopToFind.price,
+        quantity: 1,
+        images: laptopToFind.images,
+        stock: laptopToFind.stock
+      }
+      addToCart(laptopToAdd)
+      showNotification('Added 1 item to cart')
+    }
+  }
 
   return (
     <>
@@ -40,13 +58,16 @@ const Home = (): JSX.Element => {
 
           <div className='my-6 flex justify-center gap-x-7 lg:my-4 lg:justify-normal lg:gap-x-5'>
             <Link
-              to='/'
+              to={laptopToFind?._id !== undefined ? laptopToFind._id : '/'}
               className='rounded-lg border px-3 py-1 lg:px-5 lg:py-2'
             >
               See more
             </Link>
 
-            <button className='flex items-center rounded-lg bg-white px-3 py-1 text-black lg:gap-x-1 lg:px-5 lg:py-2'>
+            <button
+              onClick={handleCart}
+              className='flex items-center rounded-lg bg-white px-3 py-1 text-black lg:gap-x-1 lg:px-5 lg:py-2'
+            >
               <FaShoppingCart />
               Add to cart
             </button>
@@ -62,58 +83,62 @@ const Home = (): JSX.Element => {
         </div>
       </section>
 
-      {laptops.length === 0
-        ? (
-          <section className='flex items-center justify-center bg-slate-200 py-5'>
-            <Loader />
-          </section>
-          )
-        : (
-          <section className='bg-slate-200 pb-4 pt-2'>
-            <h2 className='mb-2 ml-3 text-2xl font-semibold'>New Arrivals</h2>
+      {laptops.length === 0 ? (
+        <section className='flex items-center justify-center bg-slate-200 py-5'>
+          <Loader />
+        </section>
+      ) : (
+        <section className='bg-slate-200 pb-4 pt-2'>
+          <h2 className='mb-2 ml-3 text-2xl font-semibold'>New Arrivals</h2>
 
-            <div className='flex gap-x-5 overflow-x-scroll px-3'>
-              {laptops?.map(laptop => {
-                const { _id, images, brand, model, price, stock } = laptop
+          <div className='flex gap-x-5 overflow-x-scroll px-3'>
+            {laptops?.map(laptop => {
+              const { _id, images, brand, model, price, stock } = laptop
 
-                const handleCart = (): void => {
-                  const laptopToAdd: CartItem = {
-                    id: _id,
-                    images,
-                    name: `${brand} ${model}`,
-                    price,
-                    quantity: 1,
-                    stock
-                  }
-                  addToCart(laptopToAdd)
-                  showNotification('Added 1 item to cart')
+              const handleCart = (): void => {
+                const laptopToAdd: CartItem = {
+                  id: _id,
+                  images,
+                  name: `${brand} ${model}`,
+                  price,
+                  quantity: 1,
+                  stock
                 }
+                addToCart(laptopToAdd)
+                showNotification('Added 1 item to cart')
+              }
 
-                return (
-                  <div key={_id}>
-                    <Link to={_id} className='w-72 rounded-lg bg-white p-4 h-72 flex items-center'>
-                      <img src={images[0]} alt='' />
+              return (
+                <div key={_id}>
+                  <Link
+                    to={_id}
+                    className='flex h-72 w-72 items-center rounded-lg bg-white p-4'
+                  >
+                    <img src={images[0]} alt='' />
+                  </Link>
+
+                  <h3 className='mt-2 text-lg font-bold'>
+                    <Link to={_id}>
+                      {brand} {model}
                     </Link>
+                  </h3>
 
-                    <h3 className='text-lg font-bold mt-2'>
-                      <Link to={_id}>
-                        {brand} {model}
-                      </Link>
-                    </h3>
+                  <div className='flex items-center gap-x-5'>
+                    <p className='text-lg font-semibold'>${price}</p>
 
-                    <div className='flex items-center gap-x-5'>
-                      <p className='text-lg font-semibold'>${price}</p>
-
-                      <button onClick={handleCart} className='rounded-lg border-2 border-black p-1 duration-300 hover:bg-black hover:text-white'>
-                        Add to cart
-                      </button>
-                    </div>
+                    <button
+                      onClick={handleCart}
+                      className='rounded-lg border-2 border-black p-1 duration-300 hover:bg-black hover:text-white'
+                    >
+                      Add to cart
+                    </button>
                   </div>
-                )
-              })}
-            </div>
-          </section>
-          )}
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      )}
     </>
   )
 }
