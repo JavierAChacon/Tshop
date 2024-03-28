@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FaGamepad,
@@ -7,7 +8,7 @@ import {
   FaShoppingCart
 } from 'react-icons/fa'
 import { Sling as Hamburger } from 'hamburger-react'
-import { useState } from 'react'
+import { TbTriangleFilled, TbTriangleInvertedFilled } from 'react-icons/tb'
 
 const Header = (): JSX.Element => {
   const routes = [
@@ -22,26 +23,32 @@ const Header = (): JSX.Element => {
       Icon: FaHome
     },
     {
-      title: 'Gaming',
-      to: '/',
-      Icon: FaGamepad
-    },
-    {
-      title: 'Business',
-      to: '/',
-      Icon: FaBriefcase
-    },
-    {
-      title: 'Creativity',
-      to: '/',
-      Icon: FaPaintBrush
+      title: 'Categories',
+      categories: [
+        {
+          title: 'Gaming',
+          to: '/gaming',
+          Icon: FaGamepad
+        },
+        {
+          title: 'Business',
+          to: '/business',
+          Icon: FaBriefcase
+        },
+        {
+          title: 'Creativity',
+          to: '/creativity',
+          Icon: FaPaintBrush
+        }
+      ]
     }
   ]
 
   const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [showCategories, setShowCategories] = useState<boolean>(false)
 
   return (
-    <header className='fixed z-[1] flex h-10 w-full max-w-screen-2xl bg-black pl-4 text-gray-300'>
+    <header className='fixed z-[1] flex h-10 w-full max-w-screen-2xl bg-black pl-4 text-gray-300 lg:shadow-none'>
       <nav className='flex w-full items-center justify-between'>
         <Link
           to='/'
@@ -63,12 +70,12 @@ const Header = (): JSX.Element => {
             />
           </div>
           <ul
-            className={`${isOpen ? 'right-0' : '-right-full'} absolute top-10 bg-white text-black duration-300 lg:right-0 lg:top-0 lg:flex lg:h-10 lg:items-center lg:bg-black lg:text-gray-300`}
+            className={`${isOpen ? 'right-0' : '-right-full'} shadow-2xl rounded-md absolute top-10 bg-white text-black duration-300 lg:right-0 lg:top-0 lg:flex lg:h-10 lg:items-center lg:bg-black lg:text-gray-300`}
           >
             {routes.map(route => {
-              const { Icon, title, to } = route
+              const { Icon, title, to, categories } = route
 
-              if (title === 'Cart') {
+              if (title === 'Cart' && to !== undefined) {
                 return (
                   <li
                     key={title}
@@ -78,25 +85,57 @@ const Header = (): JSX.Element => {
                       to={to}
                       className='flex items-center gap-x-2 p-5 text-lg'
                     >
-                      <Icon /> {title}
+                      {title} <Icon />
+                    </Link>
+                  </li>
+                )
+              } else if (title === 'Categories' && categories !== undefined) {
+                return (
+                  <li key={title} className='relative w-40 '>
+                    <div
+                      onClick={() => setShowCategories(!showCategories)}
+                      className={`${showCategories ? 'lg:top-[78px]' : 'lg:top-0'} relative cursor-pointer items-center gap-x-2 p-5 text-lg `}
+                    >
+                      <span className='flex items-center gap-x-1 duration-300 hover:translate-x-1 lg:hover:text-white'>
+                        {title}
+                        <TbTriangleFilled
+                          className={`${showCategories ? 'rotate-180' : 'rotate-0'} h-3 transition-transform`}
+                        />
+                      </span>
+
+                      {showCategories && (
+                        <ul className='rounded-md bg-white shadow-md'>
+                          {categories.map(category => (
+                            <li key={category.title} className='py-3'>
+                              <Link
+                                to={category.to}
+                                className='flex items-center justify-center gap-x-2 text-gray-500 hover:text-black'
+                              >
+                                <category.Icon /> {category.title}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  </li>
+                )
+              } else if (to !== undefined) {
+                return (
+                  <li
+                    key={title}
+                    className='duration-300 hover:translate-x-1 lg:hover:text-white'
+                  >
+                    <Link
+                      to={to}
+                      className='flex items-center gap-x-2 p-5 text-lg'
+                    >
+                      {title} <Icon />
                     </Link>
                   </li>
                 )
               }
-
-              return (
-                <li
-                  key={title}
-                  className='duration-300 hover:translate-x-1 lg:hover:text-white'
-                >
-                  <Link
-                    to={to}
-                    className='flex items-center gap-x-2 p-5 text-lg'
-                  >
-                    <Icon /> {title}
-                  </Link>
-                </li>
-              )
+              return null
             })}
           </ul>
         </div>
