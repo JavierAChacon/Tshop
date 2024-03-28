@@ -17,7 +17,7 @@ const Home = (): JSX.Element => {
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
       const { data } = await axios(BACKEND_URL)
-      setLaptops(data)
+      setLaptops(data.slice(0, 5))
     }
     fetchData().catch(error => console.error(error))
   }, [])
@@ -59,14 +59,14 @@ const Home = (): JSX.Element => {
           <div className='my-6 flex justify-center gap-x-7 lg:my-4 lg:justify-normal lg:gap-x-5'>
             <Link
               to={laptopToFind?._id !== undefined ? laptopToFind._id : '/'}
-              className='rounded-lg border px-3 py-1 lg:px-5 lg:py-2'
+              className='rounded-lg border px-3 py-1 transition-transform duration-300 hover:scale-105 lg:px-5 lg:py-2'
             >
               See more
             </Link>
 
             <button
               onClick={handleCart}
-              className='flex items-center rounded-lg bg-white px-3 py-1 text-black lg:gap-x-1 lg:px-5 lg:py-2'
+              className='flex items-center rounded-lg bg-white px-3 py-1 text-black transition-transform duration-300 hover:scale-105 lg:gap-x-1 lg:px-5 lg:py-2'
             >
               <FaShoppingCart />
               Add to cart
