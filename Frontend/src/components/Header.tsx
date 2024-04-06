@@ -5,10 +5,11 @@ import {
   FaBriefcase,
   FaPaintBrush,
   FaHome,
-  FaShoppingCart
+  FaShoppingCart,
+  FaLaptop
 } from 'react-icons/fa'
 import { Sling as Hamburger } from 'hamburger-react'
-import { TbTriangleFilled, TbTriangleInvertedFilled } from 'react-icons/tb'
+import { TbTriangleFilled } from 'react-icons/tb'
 
 const Header = (): JSX.Element => {
   const routes = [
@@ -25,6 +26,11 @@ const Header = (): JSX.Element => {
     {
       title: 'Categories',
       categories: [
+        {
+          title: 'All laptops',
+          to: '/all',
+          Icon: FaLaptop
+        },
         {
           title: 'Gaming',
           to: '/gaming',
@@ -70,7 +76,7 @@ const Header = (): JSX.Element => {
             />
           </div>
           <ul
-            className={`${isOpen ? 'right-0' : '-right-full'} shadow-2xl rounded-md absolute top-10 bg-white text-black duration-300 lg:right-0 lg:top-0 lg:flex lg:h-10 lg:items-center lg:bg-black lg:text-gray-300`}
+            className={`${isOpen ? 'right-0' : '-right-full'} absolute top-10 rounded-md bg-white text-black shadow-2xl duration-300 lg:right-0 lg:top-0 lg:flex lg:h-10 lg:items-center lg:bg-black lg:text-gray-300`}
           >
             {routes.map(route => {
               const { Icon, title, to, categories } = route
@@ -94,7 +100,7 @@ const Header = (): JSX.Element => {
                   <li key={title} className='relative w-40 '>
                     <div
                       onClick={() => setShowCategories(!showCategories)}
-                      className={`${showCategories ? 'lg:top-[78px]' : 'lg:top-0'} relative cursor-pointer items-center gap-x-2 p-5 text-lg `}
+                      className={`${showCategories ? 'lg:top-[104px]' : 'lg:top-0'} relative cursor-pointer items-center gap-x-2 p-5 text-lg `}
                     >
                       <span className='flex items-center gap-x-1 duration-300 hover:translate-x-1 lg:hover:text-white'>
                         {title}

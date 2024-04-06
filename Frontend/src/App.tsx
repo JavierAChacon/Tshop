@@ -6,6 +6,7 @@ import Cart from './pages/Cart'
 import CheckoutSuccess from './pages/CheckoutSuccess'
 import { CartProvider } from './context/CartContext'
 import { NotificationProvider } from './context/NotificationContext'
+import AllLaptops from './pages/AllLaptops'
 
 function App (): JSX.Element {
   return (
@@ -17,6 +18,7 @@ function App (): JSX.Element {
               <Route index element={<Home />} />
               <Route path='/:id' element={<Product />} />
               <Route path='/cart' element={<Cart />} />
+              <Route path='/all' element={<AllLaptops />} />
             </Route>
 
             <Route path='checkout' element={<Layout />}>
